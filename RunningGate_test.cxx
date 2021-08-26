@@ -25,7 +25,7 @@ void RunningGate_test()
 	TFile file("matrix.root","READ");
 	TH2D* mat = (TH2D*)file.Get("m");
 
-	TFile ffile("testFile.root","RECREATE");
+	TFile ffile("runningGate.root","RECREATE");
 
 	RunningGate gate(mat);
 	gate.SetRunningGate(120,160,1);
