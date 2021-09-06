@@ -58,17 +58,17 @@ void RunningGate::RunGate()
 				for(int i=peak->pc->peak_bin_start; i<=peak->pc->peak_bin_end; i++)
 				{
 					area += gate_slice->GetBinContent(i);
-					area_err += gate_slice->GetBinError(i);
+					area_err += TMath::Power(gate_slice->GetBinError(i),2);
 				}
 				for(int i=peak->pc->bcgl_bin_start; i<=peak->pc->bcgl_bin_end; i++)
 				{
 					bcg += gate_slice->GetBinContent(i);
-					bcg_err += gate_slice->GetBinError(i);
+					bcg_err += TMath::Power(gate_slice->GetBinError(i),2);
 				}
 				for(int i=peak->pc->bcgr_bin_start; i<=peak->pc->bcgr_bin_end; i++)
 				{
 					bcg += gate_slice->GetBinContent(i);
-					bcg_err += gate_slice->GetBinError(i);
+					bcg_err += TMath::Power(gate_slice->GetBinError(i),2);
 				}
 
 				double norm = (peak->pc->peak_bin_end-peak->pc->peak_bin_start)/(double)
@@ -77,7 +77,7 @@ void RunningGate::RunGate()
 
 				bcg_err = bcg_err*(norm*norm);
 				area = area - bcg*norm;
-				area_err = TMath::Sqrt(area_err+bcg);
+				area_err = TMath::Sqrt(area_err+bcg_err);
 
 
 				peak->fit_area.push_back(area);
