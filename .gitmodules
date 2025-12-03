@@ -1,0 +1,3 @@
+[submodule "modules/theuerkauf_fitter"]
+	path = modules/theuerkauf_fitter
+	url = https://github.com/matLogh/theuerkauf_fitter.git
