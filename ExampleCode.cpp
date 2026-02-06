@@ -8,8 +8,10 @@ void SampleCode()
     TApplication app("app", 0, 0);
 
     // pass symetric matrix to the running gate
-    TFile file("example_data/RawDataBin02.root", "READ");
-    TH2D *mat = (TH2D *)file.Get("GammaGamma/IndividualDetectors/mGammaGammaRaw_RestvsDet0");
+    // TFile file("example_data/RawDataBin02.root", "READ");
+    TFile file("example_data/example_matrix.root", "READ");
+    // TH2D *mat = (TH2D *)file.Get("GammaGamma/IndividualDetectors/mGammaGammaRaw_RestvsDet0");
+    TH2D *mat = (TH2D *)file.Get("mGammaGammaRaw_RestvsDet0");
     // create file for storing results
 
     RunningGate gate(mat);
