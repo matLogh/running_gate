@@ -15,6 +15,30 @@ find_package(ROOT REQUIRED COMPONENTS Core Hist Graf Gpad)
 # Include ROOT headers
 include_directories(${ROOT_INCLUDE_DIRS})
 
+find_package(Git QUIET)
+
+set(THEUERKAUF_FITTER_DIR "${CMAKE_CURRENT_SOURCE_DIR}/modules/theuerkauf_fitter")
+if(NOT EXISTS "${THEUERKAUF_FITTER_DIR}/CMakeLists.txt")
+    if(GIT_FOUND AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/.git")
+        message(STATUS "Initializing theuerkauf_fitter submodule")
+        execute_process(
+            COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive -- modules/theuerkauf_fitter
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+            RESULT_VARIABLE GIT_SUBMODULE_RESULT
+        )
+    else()
+        message(FATAL_ERROR "theuerkauf_fitter submodule is missing and Git is not available to initialize it")
+    endif()
+
+    if(NOT GIT_SUBMODULE_RESULT EQUAL 0)
+        message(FATAL_ERROR "Failed to initialize theuerkauf_fitter submodule. Run: git submodule update --init --recursive")
+    endif()
+endif()
+
+if(NOT EXISTS "${THEUERKAUF_FITTER_DIR}/CMakeLists.txt")
+    message(FATAL_ERROR "theuerkauf_fitter submodule is missing. Run: git submodule update --init --recursive")
+endif()
+
 # Add subdirectories
 add_subdirectory(modules/theuerkauf_fitter)
 add_subdirectory(src)
