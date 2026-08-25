@@ -17,9 +17,10 @@ void RunningGate::RunGate(const double energy_gate_start, const double energy_ga
         return;
     }
 
-    const int running_gate_start_bin = fMatrix->GetXaxis()->FindBin(energy_gate_start);
-    const int running_gate_end_bin = fMatrix->GetXaxis()->FindBin(energy_gate_end);
-    const double bin_width = fMatrix->GetXaxis()->GetBinWidth(1);
+    auto *gate_axis = fGateAxis == GateAxis::X ? fMatrix->GetXaxis() : fMatrix->GetYaxis();
+    const int running_gate_start_bin = gate_axis->FindBin(energy_gate_start);
+    const int running_gate_end_bin = gate_axis->FindBin(energy_gate_end);
+    const double bin_width = gate_axis->GetBinWidth(1);
 
     std::shared_ptr<TFile> fout{nullptr};
     if (!fSaveFileName.empty())
@@ -28,7 +29,9 @@ void RunningGate::RunGate(const double energy_gate_start, const double energy_ga
     }
 
     // make full gate projection
-    auto h_proj_total = fMatrix->ProjectionY("proj_gate_total", running_gate_start_bin, running_gate_end_bin, "e");
+    auto h_proj_total = fGateAxis == GateAxis::X
+                            ? fMatrix->ProjectionY("proj_gate_total", running_gate_start_bin, running_gate_end_bin, "e")
+                            : fMatrix->ProjectionX("proj_gate_total", running_gate_start_bin, running_gate_end_bin, "e");
     if (fout)
     {
         fout->cd();
@@ -44,11 +47,11 @@ void RunningGate::RunGate(const double energy_gate_start, const double energy_ga
                   << "Slicing gg-matrix "
                   << "                       \r" << std::flush;
 
-        auto h_slice = fMatrix->ProjectionY("proj_gate_", bin_i, bin_i + bin_gate_width);
+        auto h_slice = fGateAxis == GateAxis::X ? fMatrix->ProjectionY("proj_gate_", bin_i, bin_i + bin_gate_width)
+                                                : fMatrix->ProjectionX("proj_gate_", bin_i, bin_i + bin_gate_width);
 
         const double center_energy =
-            (h_slice->GetXaxis()->GetBinLowEdge(bin_i) + h_slice->GetXaxis()->GetBinUpEdge(bin_i + bin_gate_width)) /
-            2.0;
+            (gate_axis->GetBinLowEdge(bin_i) + gate_axis->GetBinUpEdge(bin_i + bin_gate_width)) / 2.0;
 
         h_slice->SetName(Form("proj_gate_%d", center_energy));
         h_slice->SetTitle(

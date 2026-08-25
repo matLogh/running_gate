@@ -38,6 +38,9 @@ rg.SetCoincidencePeak_countEvents(peak_center1, peak_start1, peak_end1, bcg_left
 // recommended but optional save output
 rg.SetSaveFileName("running_gate_output.root");
 
+// optional: choose which TH2 axis is gated; default is RunningGate::GateAxis::X
+rg.SetGateAxis(RunningGate::GateAxis::Y);
+
 // run analysis
 rg.RunGate(energy_gate_start, energy_gate_end, bin_gate_width);
 ```

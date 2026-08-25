@@ -31,6 +31,12 @@ class RunningGate
 {
 
   public:
+    enum class GateAxis
+    {
+        X,
+        Y
+    };
+
     /**
      * @brief Constructor that initializes the running gate analysis
      * @param matrix Pointer to the 2D histogram to analyze
@@ -68,6 +74,10 @@ class RunningGate
     {
         fSaveFileName = filename;
     };
+    void SetGateAxis(const GateAxis axis)
+    {
+        fGateAxis = axis;
+    };
 
   private:
     TF1 *fcn_peak1; ///< First peak fitting function (legacy)
@@ -87,6 +97,7 @@ class RunningGate
     std::vector<TGraph *> fGraphs;
     std::shared_ptr<TMultiGraph> fMultiGraph;
     std::string fSaveFileName{};
+    GateAxis fGateAxis{GateAxis::X};
 
     std::shared_ptr<TMultiGraph> CreateGraphs(std::shared_ptr<TFile> write_file = nullptr);
 
